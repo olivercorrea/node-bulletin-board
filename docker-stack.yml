@@ -1,7 +1,7 @@
 version: '3.3'
 
 services:
-      
+
   bb-db:
     image: ${dockerId}/bulletin-board-db:v3
     networks:
@@ -11,6 +11,8 @@ services:
     image: ${dockerId}/bulletin-board-app:v3
     ports:
       - "8080:8080"
+    depends_on:
+      - bb-db
     networks:
       - bb-net
 

@@ -1,7 +1,7 @@
 version: '3.3'
 
 services:
-      
+
   bb-db:
     image: ${dockerId}/bulletin-board-db:v3
     build:
@@ -13,6 +13,8 @@ services:
     image: ${dockerId}/bulletin-board-app:v3
     build:
       context: ./bulletin-board-app
+    ports:
+      - "8080:8080"
     depends_on:
       - bb-db
     restart: on-failure

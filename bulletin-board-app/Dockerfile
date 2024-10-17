@@ -1,13 +1,18 @@
-FROM node:6.11.5
+FROM node:current-slim
 
 WORKDIR /usr/src/app
-COPY package.json .
-RUN npm install
 
-EXPOSE 8080
-CMD [ "npm", "start" ]
+# Instalar netcat
+RUN apt-get update && apt-get install -y netcat-openbsd && apt-get clean
+
+COPY package.json package-lock.json* ./
+RUN npm install
 
 COPY . .
 
-HEALTHCHECK --interval=5s \
-  CMD curl --fail http://localhost:8080 || exit 1  
+# Copia el script de espera y dale permisos de ejecución
+COPY wait-for-it.sh /usr/src/app/
+RUN chmod +x /usr/src/app/wait-for-it.sh
+
+EXPOSE 8080
+CMD ["./wait-for-it.sh", "bb-db", "--", "npm", "start"]
